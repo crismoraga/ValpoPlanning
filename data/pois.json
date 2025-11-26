@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "type": "industrial_discharge",
+    "lat": -33.04237792813275,
+    "lon": -71.61844948056215,
+    "priority": "high",
+    "coverage_radius_m": 150,
+    "name": "industrial_discharge_1"
+  },
+  {
+    "id": 2,
+    "type": "industrial_discharge",
+    "lat": -33.05152407220801,
+    "lon": -71.61326711104877,
+    "priority": "high",
+    "coverage_radius_m": 150,
+    "name": "industrial_discharge_2"
+  },
+  {
+    "id": 3,
+    "type": "industrial_discharge",
+    "lat": -33.04630310030791,
+    "lon": -71.6119392074012,
+    "priority": "high",
+    "coverage_radius_m": 150,
+    "name": "industrial_discharge_3"
+  },
+  {
+    "id": 4,
+    "type": "industrial_discharge",
+    "lat": -33.04500895972826,
+    "lon": -71.60572891586314,
+    "priority": "high",
+    "coverage_radius_m": 150,
+    "name": "industrial_discharge_4"
+  },
+  {
+    "id": 5,
+    "type": "industrial_discharge",
+    "lat": -33.05026545123263,
+    "lon": -71.61758623428865,
+    "priority": "high",
+    "coverage_radius_m": 150,
+    "name": "industrial_discharge_5"
+  },
+  {
+    "id": 6,
+    "type": "industrial_discharge",
+    "lat": -33.046335414390064,
+    "lon": -71.6044161596001,
+    "priority": "high",
+    "coverage_radius_m": 150,
+    "name": "industrial_discharge_6"
+  },
+  {
+    "id": 7,
+    "type": "anchorage",
+    "lat": -33.048566602501744,
+    "lon": -71.6117819941528,
+    "priority": "medium",
+    "coverage_radius_m": 120,
+    "name": "anchorage_1"
+  },
+  {
+    "id": 8,
+    "type": "anchorage",
+    "lat": -33.046034593813815,
+    "lon": -71.61203097181291,
+    "priority": "medium",
+    "coverage_radius_m": 120,
+    "name": "anchorage_2"
+  },
+  {
+    "id": 9,
+    "type": "anchorage",
+    "lat": -33.043672503066745,
+    "lon": -71.61419414568837,
+    "priority": "medium",
+    "coverage_radius_m": 120,
+    "name": "anchorage_3"
+  },
+  {
+    "id": 10,
+    "type": "anchorage",
+    "lat": -33.04636658702405,
+    "lon": -71.61496459314795,
+    "priority": "medium",
+    "coverage_radius_m": 120,
+    "name": "anchorage_4"
+  },
+  {
+    "id": 11,
+    "type": "sensitive_areas",
+    "lat": -33.04788681615707,
+    "lon": -71.6136011891847,
+    "priority": "very_high",
+    "coverage_radius_m": 100,
+    "name": "sensitive_areas_1"
+  },
+  {
+    "id": 12,
+    "type": "sensitive_areas",
+    "lat": -33.044688589200575,
+    "lon": -71.6135104294059,
+    "priority": "very_high",
+    "coverage_radius_m": 100,
+    "name": "sensitive_areas_2"
+  },
+  {
+    "id": 13,
+    "type": "sensitive_areas",
+    "lat": -33.04569477926154,
+    "lon": -71.61918156649736,
+    "priority": "very_high",
+    "coverage_radius_m": 100,
+    "name": "sensitive_areas_3"
+  },
+  {
+    "id": 14,
+    "type": "sensitive_areas",
+    "lat": -33.04371455476438,
+    "lon": -71.61131106553044,
+    "priority": "very_high",
+    "coverage_radius_m": 100,
+    "name": "sensitive_areas_4"
+  },
+  {
+    "id": 15,
+    "type": "sensitive_areas",
+    "lat": -33.04742065040071,
+    "lon": -71.61301993131474,
+    "priority": "very_high",
+    "coverage_radius_m": 100,
+    "name": "sensitive_areas_5"
+  },
+  {
+    "id": 16,
+    "type": "bay_entrances",
+    "lat": -33.04800569517911,
+    "lon": -71.61383001116752,
+    "priority": "high",
+    "coverage_radius_m": 180,
+    "name": "bay_entrances_1"
+  },
+  {
+    "id": 17,
+    "type": "bay_entrances",
+    "lat": -33.04451894472212,
+    "lon": -71.60519934542513,
+    "priority": "high",
+    "coverage_radius_m": 180,
+    "name": "bay_entrances_2"
+  },
+  {
+    "id": 18,
+    "type": "bay_entrances",
+    "lat": -33.048485375190445,
+    "lon": -71.60589665452805,
+    "priority": "high",
+    "coverage_radius_m": 180,
+    "name": "bay_entrances_3"
+  },
+  {
+    "id": 19,
+    "type": "critical_monitoring",
+    "lat": -33.04657409669906,
+    "lon": -71.61296855574808,
+    "priority": "very_high",
+    "coverage_radius_m": 200,
+    "name": "critical_monitoring_1"
+  },
+  {
+    "id": 20,
+    "type": "critical_monitoring",
+    "lat": -33.05014226057768,
+    "lon": -71.61420573683252,
+    "priority": "very_high",
+    "coverage_radius_m": 200,
+    "name": "critical_monitoring_2"
+  }
+]

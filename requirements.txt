@@ -1,0 +1,6 @@
+numpy
+deap
+networkx
+matplotlib
+contextily
+pandas

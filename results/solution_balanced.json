@@ -1,0 +1,115 @@
+{
+  "metadata": {
+    "project": "UWSN Planning - Puerto de Valparaiso",
+    "course": "TEL343 - Planificacion y Dimensionamiento de Redes",
+    "date": "2025-11-25T23:48:44.184773",
+    "algorithm": "NSGA-II",
+    "execution_time_sec": 37.35909366607666
+  },
+  "configuration": {
+    "center_lat": -33.03558,
+    "center_lon": -71.626953,
+    "area_radius_km": 1.0,
+    "frequency_khz": 20.0,
+    "max_range_m": 5934.473365783691,
+    "nsga2_params": {
+      "population_size": 100,
+      "generations": 150,
+      "mutation_rate": 0.15,
+      "crossover_rate": 0.8,
+      "max_sensor_nodes": 25,
+      "max_gateway_buoys": 6,
+      "tournament_size": 3
+    }
+  },
+  "solution": {
+    "type": "balanced",
+    "cost_relative": 14,
+    "coverage_pct": 85.0,
+    "num_sensor_nodes": 9,
+    "num_gateway_buoys": 1
+  },
+  "nodes": {
+    "sensor_nodes": [
+      {
+        "id": "SN-01",
+        "lat": -33.033419491285834,
+        "lon": -71.62934278154287,
+        "depth_m": 20.812880178858826
+      },
+      {
+        "id": "SN-02",
+        "lat": -33.04009699671057,
+        "lon": -71.62957603242948,
+        "depth_m": 16.16153241808079
+      },
+      {
+        "id": "SN-03",
+        "lat": -33.030112018682175,
+        "lon": -71.62314325341305,
+        "depth_m": 21.643532718577674
+      },
+      {
+        "id": "SN-04",
+        "lat": -33.03780714011884,
+        "lon": -71.62451122016286,
+        "depth_m": 8.030804575777278
+      },
+      {
+        "id": "SN-05",
+        "lat": -33.03540243792045,
+        "lon": -71.61827899841643,
+        "depth_m": 10.119265580455536
+      },
+      {
+        "id": "SN-06",
+        "lat": -33.03914550260272,
+        "lon": -71.63388099888444,
+        "depth_m": 14.6685397059003
+      },
+      {
+        "id": "SN-07",
+        "lat": -33.034715126989745,
+        "lon": -71.62509938912736,
+        "depth_m": 13.698353107980315
+      },
+      {
+        "id": "SN-08",
+        "lat": -33.0341653913271,
+        "lon": -71.6347887384337,
+        "depth_m": 18.23269832725724
+      },
+      {
+        "id": "SN-09",
+        "lat": -33.033275034898146,
+        "lon": -71.62528269757068,
+        "depth_m": 13.811715229959956
+      }
+    ],
+    "gateway_buoys": [
+      {
+        "id": "BG-01",
+        "lat": -33.03404164023216,
+        "lon": -71.62413611753942,
+        "depth_m": 0.0
+      }
+    ]
+  },
+  "economics": {
+    "capex_usd": 364100.0,
+    "opex_annual_usd": 77311.5,
+    "tco_10y_usd": 882866.4580742613
+  },
+  "validation": {
+    "connectivity_status": "OK",
+    "metrics": {
+      "total_nodes": 10,
+      "sensor_nodes": 9,
+      "gateway_buoys": 1,
+      "avg_neighbors": 9.0,
+      "max_hops_to_gateway": 1,
+      "redundancy_ratio": 1.0,
+      "total_links": 45
+    }
+  }
+}
