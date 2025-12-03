@@ -2,14 +2,14 @@
 REPORTE DE VALIDACION TECNICA - UWSN Puerto de Valparaiso
 ================================================================================
 
-Fecha: 2025-11-25 23:48:44
+Fecha: 2025-12-02 20:45:05
 Curso: TEL343 - Planificacion y Dimensionamiento de Redes
 
 ----------------------------------------
 CONFIGURACION DE RED
 ----------------------------------------
 Ubicacion: Puerto de Valparaiso, Chile
-Coordenadas centro: -33.035580, -71.626953
+Coordenadas centro: -33.037000, -71.627000
 Radio de cobertura: 1.0 km
 Frecuencia acustica: 20.0 kHz
 Rango maximo acustico: 5934 m
@@ -17,7 +17,7 @@ Rango maximo acustico: 5934 m
 ----------------------------------------
 TOPOLOGIA DESPLEGADA
 ----------------------------------------
-Sensor Nodes (SN): 9
+Sensor Nodes (SN): 7
 Gateway Buoys (BG): 1
 Edge Computer (EC): 1
 Puntos de Interes (POI): 20
@@ -25,32 +25,30 @@ Puntos de Interes (POI): 20
 ----------------------------------------
 METRICAS DE RENDIMIENTO
 ----------------------------------------
-Cobertura de POIs: 85.0%
-Costo relativo: 14.0
+Cobertura de POIs: 100.0%
+Costo relativo: 12.0
 Conectividad: [OK]
-Enlaces totales: 45
-Promedio vecinos: 9.00
+Enlaces totales: 28
+Promedio vecinos: 7.00
 Max hops al gateway: 1
 
 ----------------------------------------
 ANALISIS ECONOMICO (10 anos)
 ----------------------------------------
-CAPEX: $364,100 USD
-OPEX Anual: $77,312 USD
-TCO (VPN 8%): $882,866 USD
+CAPEX: $339,900 USD
+OPEX Anual: $73,698 USD
+TCO (VPN 8%): $834,423 USD
 
 ----------------------------------------
 VALIDACION
 ----------------------------------------
-  SN-01: 9 vecinos, 1 hops -> [OK]
-  SN-02: 9 vecinos, 1 hops -> [OK]
-  SN-03: 9 vecinos, 1 hops -> [OK]
-  SN-04: 9 vecinos, 1 hops -> [OK]
-  SN-05: 9 vecinos, 1 hops -> [OK]
-  SN-06: 9 vecinos, 1 hops -> [OK]
-  SN-07: 9 vecinos, 1 hops -> [OK]
-  SN-08: 9 vecinos, 1 hops -> [OK]
-  SN-09: 9 vecinos, 1 hops -> [OK]
+  SN-01: 7 vecinos, 1 hops -> [OK]
+  SN-02: 7 vecinos, 1 hops -> [OK]
+  SN-03: 7 vecinos, 1 hops -> [OK]
+  SN-04: 7 vecinos, 1 hops -> [OK]
+  SN-05: 7 vecinos, 1 hops -> [OK]
+  SN-06: 7 vecinos, 1 hops -> [OK]
+  SN-07: 7 vecinos, 1 hops -> [OK]
 
 ================================================================================
 RESULTADO FINAL: [OK] VALIDACION EXITOSA

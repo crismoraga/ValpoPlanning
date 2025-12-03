@@ -1,0 +1,154 @@
+% IEEEtran LaTeX template for the UWSN Valparaíso planning report
+\documentclass[conference]{IEEEtran}
+
+% --- Packages ---
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{csquotes}
+
+\sisetup{output-decimal-marker={,}}
+
+\begin{document}
+
+\title{Planificaci\'on de Topolog\'ia para Redes de Sensores Submarinas en Puertos de Barrios Costeros Inteligentes}
+
+\author{\IEEEauthorblockN{Clemente Mujica, Crist\'obal Moraga, Iv\'an Weber}
+\IEEEauthorblockA{Equipo PlaniG\"uinos\\
+Universidad T\'ecnica Federico Santa Mar\'ia\\
+Valpara\'iso, Chile\\
+Email: \{clemente.mujica, cristobal.moragag, ivan.weber\}@usm.cl}}
+
+\maketitle{}
+\pagestyle{plain}
+
+\begin{abstract}
+Este trabajo presenta el proceso de planificaci\'on y dimensionamiento de una red de sensores submarinos (UWSN) para monitoreo ambiental en la Bah\'ia de Valpara\'iso. Se describe el m\'etodo de estimaci\'on de la demanda de tr\'afico, la determinaci\'on de la ubicaci\'on de nodos sensores y boyas gateway, la definici\'on de costos de enlaces y la obtenci\'on de una topolog\'ia final \'optima mediante un algoritmo NSGA-II multiobjetivo. La topolog\'ia resultante cubre el 100\,\% de los puntos de inter\'es definidos, manteniendo un costo relativo acotado y respetando estrictas restricciones batim\'etricas y de seguridad costera.
+\end{abstract}
+
+\begin{IEEEkeywords}
+UWSN, NSGA-II, Bah\'ia de Valpara\'iso, planificaci\'on de redes, batimetr\'ia, IoT mar\'itimo
+\end{IEEEkeywords}
+
+\section{Introducci\'on}
+La planificaci\'on de redes de sensores submarinos (Underwater Wireless Sensor Networks, UWSN) en entornos portuarios exige integrar restricciones f\'isicas, batim\'etricas y operacionales con objetivos de cobertura de puntos de inter\'es (POI) y costos de despliegue. En este trabajo se aborda el dise\~no de una red UWSN para la Bah\'ia de Valpara\'iso, considerando como contexto el proyecto previo de \textit{Planificaci\'on de topolog\'ia para redes de sensores submarinas en puertos de barrios costeros inteligentes}, donde se establecieron los modelos de propagaci\'on ac\'ustica, el cat\'alogo de equipos y la metodolog\'ia general de dise\~no.
+
+El objetivo de esta etapa es refinar la topolog\'ia propuesta, integrando informaci\'on cartogr\'afica detallada (cartas SHOA, OpenStreetMap y overlays na\'uticos) y una generaci\'on realista de POI ambientales y operacionales. Se adopta un enfoque de optimizaci\'on multiobjetivo, donde se minimiza el costo relativo de la red y se maximiza el porcentaje de cobertura de POI, sujeto a restricciones de conectividad y seguridad (todos los nodos y POI deben ubicarse en agua, con m\'argenes respecto de la l\'inea de costa). El resultado es una topolog\'ia final con siete nodos sensores submarinos y una boya gateway de superficie, interconectados por enlaces ac\'usticos y radio LoRaWAN hacia un centro de monitoreo costero.
+
+\section{M\'etodo de estimaci\'on de la demanda de tr\'afico}
+La demanda de tr\'afico de la red se estim\'o a partir de los escenarios de monitoreo definidos en el trabajo previo y adaptados a la realidad de la Bah\'ia de Valpara\'iso. Se consideraron cuatro tipos principales de POI: descargas industriales, zonas de fondeo, \textit{Sensitive Areas} y \textit{Critical Monitoring}. Cada tipo se asocia a una prioridad y a un perfil de generaci\'on de datos.
+
+Para cada tipo de POI se defini\'o una tasa de generaci\'on de datos por sensor (en \si{kbps}) y un intervalo de muestreo, de acuerdo con los requerimientos de la literatura para variables f\'isico-qu\'imicas (temperatura, salinidad, ox\'igeno disuelto) y de seguridad (detecci\'on de vertimientos). Siguiendo el informe base, se distingui\'o entre:
+\begin{itemize}
+  \item Escenarios de monitoreo continuo (POI cr\'iticos), con tasas de tr\'afico m\'as altas y requisitos de baja latencia.
+  \item Escenarios peri\'odicos (POI sensibles y de fondeo), con tr\'aficos promedios menores pero con picos en eventos an\'omalos.
+\end{itemize}
+
+La demanda de tr\'afico total se calcul\'o agregando el tr\'afico esperado de todos los POI cubiertos por cada nodo sensor, considerando la capacidad de cada enlace ac\'ustico y el dimensionamiento de la boya gateway y el enlace radio hacia la estaci\'on costera. Los par\'ametros y resultados se implementaron en el \textit{notebook} \texttt{UWSN\_Planning\_Valparaiso.ipynb}, donde se almacenan en estructuras de datos como \texttt{TRAFFIC} y \texttt{LORAWAN\_CONFIG}. El dimensionamiento final verifica que el tr\'afico total cursado por el gateway se encuentra por debajo de la capacidad efectiva del enlace LoRaWAN definido en el proyecto base.
+
+\section{Determinaci\'on de la ubicaci\'on de los nodos}
+La ubicaci\'on de los nodos sensores submarinos (SN) y de las boyas gateway (BG) se determin\'o combinando informaci\'on batim\'etrica y cartogr\'afica con un proceso de optimizaci\'on estoc\'astica.
+
+\subsection{Datos empleados}
+Se utiliz\'o una malla batim\'etrica local derivada de la carta SHOA 4201 para la Bah\'ia de Valpara\'iso, complementada con la grilla global GEBCO 2025 para validar profundidades fuera del dominio principal. La malla se almacen\'o en formato \texttt{.npy} (archivo \texttt{bathymetry.npy}) y se carg\'o en el notebook para construir un campo de profundidad \(h(\varphi,\lambda)\).
+
+Para representar el dominio marino se defini\'o un pol\'igono \textit{base} de agua (\texttt{WATER\_POLYGON\_BASE}) ajustado a la carta SHOA y desplazado ligeramente hacia el oeste en longitud para compensar discrepancias entre la cartograf\'ia raster y el fondo de OpenStreetMap. Sobre este pol\'igono se aplicaron dos tipos de m\'argenes de seguridad:
+\begin{itemize}
+  \item Un margen general de \SI{250}{m} respecto de la l\'inea de costa (\texttt{COASTAL\_SAFETY\_MARGIN\_M}), que se traduce a grados de longitud y latitud mediante factores \texttt{LAT\_KM\_PER\_DEGREE} y \texttt{LON\_KM\_PER\_DEGREE}.
+  \item Un margen espec\'ifico hacia el oeste de \SI{400}{m} para cualquier punto cuya longitud exceda un umbral (\texttt{EASTERN\_LON\_THRESHOLD}), con el fin de evitar ubicaciones pr\'oximas al borde costero en ventanas donde el fondo cartogr\'afico es m\'as impreciso.
+\end{itemize}
+
+Los POI se generaron mediante un procedimiento de muestreo aleatorio controlado (funci\'on \texttt{generate\_pois\_in\_water}), que asegura que todos los centros de los discos de cobertura queden al interior del pol\'igono de agua, respetando los mismos m\'argenes de seguridad que los nodos sensores. Los par\'ametros de n\'umero de POI por tipo, radios de influencia y prioridades se definieron en la estructura \texttt{POI\_CONFIG}.
+
+\subsection{Optimizaci\'on de ubicaciones}
+Sobre este dominio se aplic\'o un algoritmo de optimizaci\'on multiobjetivo NSGA-II, implementado en Python, que explora configuraciones de nodos sensores y boyas gateway. Cada individuo de la poblaci\'on codifica un subconjunto de nodos activos (SN y BG) y su posici\'on en coordenadas geogr\'aficas discretizadas sobre el dominio de agua.
+
+El algoritmo eval\'ua para cada individuo dos funciones objetivo: (i) el costo relativo de la red, definido a partir de un cat\'alogo de costos CAPEX y OPEX por tipo de equipo, y (ii) el porcentaje de cobertura de POI, calculado a partir de la distancia entre cada POI y el nodo sensor m\'as cercano dentro de su radio de influencia. Se ejecutaron simulaciones con una poblaci\'on de 160 individuos y 320 generaciones, con probabilidad de cruce de 0,88 y de mutaci\'on de 0,22.
+
+El resultado es un frente de Pareto con 160 soluciones no dominadas, en el cual la cobertura var\'ia entre 25\,\% y 100\,\%, mientras que el costo relativo oscila entre 6 y 12 unidades normalizadas. A partir de dicho frente se seleccion\'o una soluci\'on balanceada que logra el 100\,\% de cobertura con un costo relativo de 12 y una topolog\'ia de 7 sensores submarinos y 1 boya gateway.
+
+\section{Determinaci\'on de enlaces e indexaci\'on de costos}
+Una vez fijadas las posiciones de los nodos activos, se determin\'aron los enlaces a instalar y sus costos asociados.
+
+\subsection{Enlaces ac\'usticos submarinos}
+Entre cada par de nodos sensores y la boya gateway se evalu\'o la factibilidad de un enlace ac\'ustico punto a punto, utilizando el modelo de p\'erdidas de propagaci\'on y absorci\'on definido en el informe base (modelo de Thorp y p\'erdidas geom\'etricas con exponente de propagaci\'on ajustable). Para cada posible enlace se calcula la relaci\'on se\~nal a ruido (SNR) a partir de la distancia, la profundidad y los par\'ametros del transmisor y receptor.
+
+Se construy\'o una matriz de adyacencia donde se marca un enlace \textit{activo} cuando la SNR cumple el umbral m\'inimo requerido y la distancia se mantiene dentro del rango ac\'ustico m\'aximo admisible (aproximadamente \SI{5,9}{km} en la soluci\'on final). La topolog\'ia seleccionada presenta conectividad completa: cada sensor posee siete vecinos y el n\'umero m\'aximo de saltos hacia la boya gateway es igual a uno.
+
+\subsection{Enlace de superficie y backhaul}
+La boya gateway se conecta con una estaci\'on costera mediante un enlace radio LoRaWAN o equivalente, seg\'un el dise\~no del proyecto base. Se verific\'o que la distancia horizontal entre la boya seleccionada y la costa est\'a dentro del rango de cobertura radio definido en \texttt{LORAWAN\_CONFIG}, tomando en cuenta la curvatura de la costa y los m\'argenes de seguridad.
+
+\subsection{Modelo de costos}
+El costo de la red se model\'o como la suma de un componente CAPEX (inversi\'on inicial) y un componente OPEX (costos anuales), parametrizados en el cat\'alogo de equipos y servicios del informe previo. En la soluci\'on seleccionada se obtiene:
+\begin{itemize}
+  \item CAPEX total aproximado de \$\,339{,}900\,\text{USD}, distribuido en sensores, boyas gateway, computador de borde, despliegue, infraestructura, ingenier\'ia y contingencia.
+  \item OPEX anual de aproximadamente \$\,73{,}698\,\text{USD}, considerando mantenimiento, energ\'ia, comunicaciones, personal, reposici\'on, seguros y licencias de software.
+\end{itemize}
+
+Con una proyecci\'on a 10 a\~nos y una tasa de descuento del 8\,\%, el costo total de propiedad (TCO) se estima en torno a \$\,834{,}423\,\text{USD}. Se derivan tambi\'en m\'etricas de eficiencia, como costo por POI cubierto (\$\,41{,}721) y costo por kil\'ometro cuadrado monitoreado (\$\,265{,}605), que permiten comparar alternativas de topolog\'ia.
+
+\section{Topolog\'ia final}
+La Figura~\ref{fig:topologia} muestra la topolog\'ia final seleccionada, superpuesta sobre un mapa de la Bah\'ia de Valpara\'iso. El diagrama fue generado en el notebook a partir de la funci\'on de visualizaci\'on geoespacial, utilizando como fondo cartogr\'afico OpenStreetMap con un pol\'igono de agua ajustado a la carta SHOA 4201 y un overlay batim\'etrico. La capa de hondonadas y fondos se obtuvo a partir de la malla batim\'etrica \texttt{bathymetry.npy}, mientras que los discos de influencia de los POI se calcularon seg\'un la configuraci\'on \texttt{POI\_CONFIG}.
+
+En la figura se distinguen:
+\begin{itemize}
+  \item Siete nodos sensores submarinos (SN-1 a SN-7), ubicados en profundidades entre \SI{9}{m} y \SI{24}{m}, todos validados como ubicaciones en agua.
+  \item Una boya gateway (BG-1) de superficie, que act\'ua como punto de agregaci\'on de tr\'afico hacia la estaci\'on costera.
+  \item Discos de cobertura alrededor de cada POI, que ilustran la influencia de los sensores sobre descargas industriales, zonas de fondeo y \textit{Sensitive/Critical Areas}.
+  \item Enlaces ac\'usticos activos entre sensores y gateway (en verde), y el enlace radio entre BG-1 y el centro costero.
+\end{itemize}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.48\textwidth]{figures/topology_map_osm.png}% generado desde el notebook UWSN_Planning_Valparaiso.ipynb
+  \caption{Topolog\'ia optimizada de la red UWSN en la Bah\'ia de Valpara\'iso, con nodos sensores, boya gateway, POI y enlaces activos superpuestos sobre la carta base.}
+  \label{fig:topologia}
+\end{figure}
+
+La topolog\'ia cumple las siguientes propiedades clave: (i) cobertura del 100\,\% de los POI generados, (ii) conectividad completa con un solo salto hacia el gateway y (iii) cumplimiento estricto de las restricciones batim\'etricas y de seguridad costera, al aplicar simult\'aneamente el desplazamiento del pol\'igono de agua, el margen general de \SI{250}{m} y el margen espec\'ifico de \SI{400}{m} hacia el oeste para longitudes superiores al umbral definido.
+
+\section{Trabajo futuro}
+A pesar de que la topolog\'ia obtenida satisface los objetivos de cobertura y costo planteados, el proceso de planificaci\'on puede ampliarse en varias direcciones:
+\begin{itemize}
+  \item \textbf{Modelos de tr\'afico m\'as detallados:} incorporar perfiles de generaci\'on de datos dependientes de la estaci\'on del a\~no, eventos extremos y pol\'iticas adaptativas de compresi\'on y agregaci\'on en los nodos.
+  \item \textbf{Fiabilidad y tolerancia a fallos:} analizar escenarios de falla de nodos o enlaces e introducir objetivos adicionales relacionados con k-conectividad y robustez frente a la p\'erdida de dispositivos.
+  \item \textbf{Optimizaci\'on energ\'etica:} incluir en la funci\'on objetivo el consumo energ\'etico estimado de los nodos y del enlace backhaul, as\'i como estrategias de \textit{sleep scheduling}.
+  \item \textbf{Integraci\'on de condiciones oceanogr\'aficas:} extender el modelo de propagaci\'on ac\'ustica para considerar variaciones espacio-temporales en temperatura, salinidad y corrientes, lo que podr\'ia afectar el rango efectivo de los enlaces.
+  \item \textbf{Validaci\'on emp\'irica:} contrastar la topolog\'ia propuesta con mediciones reales en terreno (batimetr\'ia de mayor resoluci\'on, pruebas de enlace ac\'ustico) y ajustar los par\'ametros del modelo.
+\end{itemize}
+
+\section{Apreciaci\'on personal del trabajo}
+Desde el punto de vista del grupo, este trabajo result\'o especialmente \'util para consolidar conceptos de planificaci\'on de redes en un contexto mar\'itimo realista. La integraci\'on entre datos cartogr\'aficos (cartas SHOA, OpenSeaMap, GEBCO), modelos f\'isicos de propagaci\'on ac\'ustica y t\'ecnicas de optimizaci\'on multiobjetivo permiti\'o visualizar de manera concreta c\'omo las decisiones de ubicaci\'on de nodos impactan en el costo y la cobertura.
+
+Entre los aspectos m\'as desafiantes se encuentran la depuraci\'on de la geometr\'ia costera (evitar que sensores o POI quedaran sobre tierra a pesar de estar dentro del pol\'igono nominal de agua), la configuraci\'on y ejecuci\'on del algoritmo NSGA-II con tiempos de c\'omputo razonables y la interpretaci\'on simult\'anea de m\'ultiples figuras (frentes de Pareto, mapas, histogramas de cobertura, gr\'aficos econ\'omicos).
+
+Por otra parte, result\'o relativamente sencillo reutilizar la infraestructura de c\'odigo y metodolog\'ia del proyecto previo, as\'i como automatizar la generaci\'on de gr\'aficos y reportes econ\'omicos a partir del Jupyter Notebook. La posibilidad de explorar interactivamente distintas configuraciones y visualizar en tiempo real su impacto sobre la topolog\'ia y los costos fue un elemento motivador y formativo.
+
+En conjunto, el trabajo reafirma la utilidad de las herramientas de simulaci\'on y optimizaci\'on computacional para apoyar la toma de decisiones en el dise\~no de redes UWSN, y sienta una base s\'olida para futuras extensiones hacia escenarios m\'as complejos y despliegues reales.
+
+\bibliographystyle{IEEEtran}
+\begin{thebibliography}{1}
+
+\bibitem{base}
+Cristóbal Moraga, Iván Weber, Clemente Mujica, ``Planificación de topología para redes de sensores submarinas en puertos de barrios costeros inteligentes,'' Informe técnico, 2025.
+
+\bibitem{gebco}
+GEBCO Compilation Group, ``GEBCO 2025 Grid,'' disponible en: \url{https://www.gebco.net/}.
+
+\bibitem{shoa}
+Servicio Hidrogr\'afico y Oceanogr\'afico de la Armada de Chile (SHOA), ``Carta 4201 -- Bah\'ia de Valpara\'iso,'' 2025.
+
+\bibitem{openstreetmap}
+OpenStreetMap contributors, ``OpenStreetMap,'' \url{https://www.openstreetmap.org}.
+
+\bibitem{openseamap}
+OpenSeaMap contributors, ``OpenSeaMap -- The Free Nautical Chart,'' \url{https://www.openseamap.org}.
+
+\end{thebibliography}
+
+\end{document}

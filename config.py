@@ -124,10 +124,10 @@ OPEX_RATES = {
 # PARÁMETROS NSGA-II
 # ============================================================================
 NSGA2_PARAMS = {
-    'population_size': 100,
-    'generations': 150,
-    'mutation_rate': 0.15,
-    'crossover_rate': 0.80,
+    'population_size': 160,
+    'generations': 320,
+    'mutation_rate': 0.22,
+    'crossover_rate': 0.88,
     'max_sensor_nodes': 25,
     'max_gateway_buoys': 6,
     'tournament_size': 3
