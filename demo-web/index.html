@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 UWSN Demo Interactiva | Planificación de Red Submarina - Valparaíso</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    
+    <!-- AOS - Animate On Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Particles Background -->
+    <canvas id="particles-canvas"></canvas>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader-content">
+            <div class="submarine-animation">
+                <div class="bubbles">
+                    <div class="bubble"></div>
+                    <div class="bubble"></div>
+                    <div class="bubble"></div>
+                    <div class="bubble"></div>
+                    <div class="bubble"></div>
+                </div>
+                <div class="submarine-icon">🛥️</div>
+                <div class="waves">
+                    <svg viewBox="0 0 120 28">
+                        <path class="wave-path" d="M0,25 Q15,5 30,25 T60,25 T90,25 T120,25 V28 H0 Z"/>
+                    </svg>
+                </div>
+            </div>
+            <h2 class="loading-title">
+                <span class="gradient-text">UWSN</span> Planning System
+            </h2>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+            <p class="loading-status" id="loading-status">Inicializando módulos...</p>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container hidden">
+        
+        <!-- Navigation Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🌊</span>
+                    <div class="logo-text">
+                        <span class="logo-main">UWSN</span>
+                        <span class="logo-sub">Planner</span>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="intro">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                    <div class="nav-indicator"></div>
+                </li>
+                <li class="nav-item" data-section="config">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Configuración</span>
+                    <div class="nav-indicator"></div>
+                </li>
+                <li class="nav-item" data-section="algorithm">
+                    <i class="fas fa-dna"></i>
+                    <span>NSGA-II</span>
+                    <div class="nav-indicator"></div>
+                </li>
+                <li class="nav-item" data-section="evolution">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Evolución</span>
+                    <div class="nav-indicator"></div>
+                </li>
+                <li class="nav-item" data-section="results">
+                    <i class="fas fa-trophy"></i>
+                    <span>Resultados</span>
+                    <div class="nav-indicator"></div>
+                </li>
+                <li class="nav-item" data-section="topology">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Topología</span>
+                    <div class="nav-indicator"></div>
+                </li>
+                <li class="nav-item" data-section="economics">
+                    <i class="fas fa-coins"></i>
+                    <span>Economía</span>
+                    <div class="nav-indicator"></div>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="course-info">
+                    <span class="badge">TEL343</span>
+                    <span class="team">PlaniGüinos 🐧</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Section 1: Intro -->
+            <section id="intro" class="section active">
+                <div class="section-inner">
+                    <div class="hero">
+                        <div class="hero-content" data-aos="fade-right">
+                            <h1 class="hero-title">
+                                <span class="title-line">Planificación de</span>
+                                <span class="title-highlight gradient-text">Red Submarina</span>
+                                <span class="title-line">Puerto de Valparaíso</span>
+                            </h1>
+                            <p class="hero-subtitle">
+                                Sistema de optimización multi-objetivo usando <strong>NSGA-II</strong> 
+                                para el despliegue de una Red de Sensores Submarinos Inalámbricos (UWSN)
+                            </p>
+                            <div class="hero-stats">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-microchip"></i></div>
+                                    <div class="stat-value" data-count="7">0</div>
+                                    <div class="stat-label">Sensores</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-broadcast-tower"></i></div>
+                                    <div class="stat-value" data-count="1">0</div>
+                                    <div class="stat-label">Boyas Gateway</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
+                                    <div class="stat-value" data-count="100">0</div>
+                                    <div class="stat-label">% Cobertura</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                    <div class="stat-value" data-count="20">0</div>
+                                    <div class="stat-label">POIs</div>
+                                </div>
+                            </div>
+                            <div class="hero-actions">
+                                <button class="btn btn-primary btn-glow" onclick="navigateTo('config')">
+                                    <i class="fas fa-play"></i> Comenzar Demo
+                                </button>
+                                <button class="btn btn-secondary" onclick="navigateTo('algorithm')">
+                                    <i class="fas fa-info-circle"></i> Ver Algoritmo
+                                </button>
+                            </div>
+                        </div>
+                        <div class="hero-visual" data-aos="fade-left">
+                            <div class="ocean-visualization">
+                                <div class="water-surface">
+                                    <div class="wave"></div>
+                                    <div class="wave"></div>
+                                    <div class="wave"></div>
+                                </div>
+                                <div class="underwater-scene">
+                                    <div class="buoy floating">
+                                        <div class="buoy-body">📡</div>
+                                        <div class="signal-rings">
+                                            <div class="ring"></div>
+                                            <div class="ring"></div>
+                                            <div class="ring"></div>
+                                        </div>
+                                    </div>
+                                    <div class="sensor sensor-1">
+                                        <div class="sensor-body">📶</div>
+                                        <div class="pulse"></div>
+                                    </div>
+                                    <div class="sensor sensor-2">
+                                        <div class="sensor-body">📶</div>
+                                        <div class="pulse"></div>
+                                    </div>
+                                    <div class="sensor sensor-3">
+                                        <div class="sensor-body">📶</div>
+                                        <div class="pulse"></div>
+                                    </div>
+                                    <div class="connection-lines">
+                                        <svg viewBox="0 0 400 300">
+                                            <line class="conn-line" x1="200" y1="50" x2="100" y2="150"/>
+                                            <line class="conn-line" x1="200" y1="50" x2="200" y2="180"/>
+                                            <line class="conn-line" x1="200" y1="50" x2="300" y2="140"/>
+                                        </svg>
+                                    </div>
+                                    <div class="fish fish-1">🐟</div>
+                                    <div class="fish fish-2">🐠</div>
+                                    <div class="seaweed seaweed-1">🌿</div>
+                                    <div class="seaweed seaweed-2">🌿</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="intro-features" data-aos="fade-up">
+                        <h3 class="features-title">Características del Sistema</h3>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon"><i class="fas fa-water"></i></div>
+                                <h4>Monitoreo Submarino</h4>
+                                <p>Sensores acústicos para calidad del agua, contaminantes y parámetros oceanográficos</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                                <h4>Optimización Inteligente</h4>
+                                <p>Algoritmo genético NSGA-II para balance óptimo costo-cobertura</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon"><i class="fas fa-network-wired"></i></div>
+                                <h4>Conectividad Total</h4>
+                                <p>Red mallada con redundancia y comunicación acústica de largo alcance</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                                <h4>Análisis Multi-Objetivo</h4>
+                                <p>Frente de Pareto para decisiones informadas entre costo y rendimiento</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Configuration -->
+            <section id="config" class="section">
+                <div class="section-inner">
+                    <div class="section-header" data-aos="fade-down">
+                        <h2><i class="fas fa-sliders-h"></i> Configuración del Sistema</h2>
+                        <p>Parámetros geográficos, acústicos y del algoritmo evolutivo</p>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <!-- Geographic Parameters -->
+                        <div class="config-card" data-aos="fade-up" data-aos-delay="100">
+                            <div class="card-header">
+                                <i class="fas fa-globe-americas"></i>
+                                <h3>Parámetros Geográficos</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="param-group">
+                                    <label>Centro de Estudio</label>
+                                    <div class="param-value">
+                                        <span class="value">-33.037°, -71.627°</span>
+                                        <span class="unit">Puerto de Valparaíso</span>
+                                    </div>
+                                </div>
+                                <div class="param-group">
+                                    <label>Radio de Área</label>
+                                    <div class="param-slider">
+                                        <input type="range" min="0.5" max="3" step="0.1" value="1" id="area-radius">
+                                        <span class="slider-value">1.0 km</span>
+                                    </div>
+                                </div>
+                                <div class="param-group">
+                                    <label>Profundidad</label>
+                                    <div class="param-value">
+                                        <span class="value">8 - 25 m</span>
+                                        <span class="unit">Bahía interior</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mini-map" id="config-map"></div>
+                        </div>
+
+                        <!-- Acoustic Parameters -->
+                        <div class="config-card" data-aos="fade-up" data-aos-delay="200">
+                            <div class="card-header">
+                                <i class="fas fa-wave-square"></i>
+                                <h3>Modelo Acústico (Thorp)</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="param-group">
+                                    <label>Frecuencia</label>
+                                    <div class="param-slider">
+                                        <input type="range" min="5" max="50" step="1" value="20" id="frequency">
+                                        <span class="slider-value">20 kHz</span>
+                                    </div>
+                                </div>
+                                <div class="param-group">
+                                    <label>Atenuación (α)</label>
+                                    <div class="param-value calculated">
+                                        <span class="value" id="attenuation-value">4.13</span>
+                                        <span class="unit">dB/km</span>
+                                    </div>
+                                </div>
+                                <div class="param-group">
+                                    <label>Rango Máximo</label>
+                                    <div class="param-value calculated">
+                                        <span class="value" id="max-range-value">5,934</span>
+                                        <span class="unit">metros</span>
+                                    </div>
+                                </div>
+                                <div class="formula-display">
+                                    <code>α(f) = 0.11f²/(1+f²) + 44f²/(4100+f²) + 2.75×10⁻⁴f² + 0.003</code>
+                                </div>
+                            </div>
+                            <div class="acoustic-viz">
+                                <canvas id="thorp-absorption-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- NSGA-II Parameters -->
+                        <div class="config-card wide" data-aos="fade-up" data-aos-delay="300">
+                            <div class="card-header">
+                                <i class="fas fa-dna"></i>
+                                <h3>Parámetros NSGA-II</h3>
+                            </div>
+                            <div class="card-content nsga-params">
+                                <div class="param-row">
+                                    <div class="param-group">
+                                        <label><i class="fas fa-users"></i> Población</label>
+                                        <div class="param-input">
+                                            <input type="number" value="160" min="50" max="500" id="population">
+                                            <span class="unit">individuos</span>
+                                        </div>
+                                    </div>
+                                    <div class="param-group">
+                                        <label><i class="fas fa-sync-alt"></i> Generaciones</label>
+                                        <div class="param-input">
+                                            <input type="number" value="320" min="50" max="1000" id="generations">
+                                            <span class="unit">iteraciones</span>
+                                        </div>
+                                    </div>
+                                    <div class="param-group">
+                                        <label><i class="fas fa-random"></i> Mutación</label>
+                                        <div class="param-slider">
+                                            <input type="range" min="0.05" max="0.5" step="0.01" value="0.22" id="mutation-rate">
+                                            <span class="slider-value">22%</span>
+                                        </div>
+                                    </div>
+                                    <div class="param-group">
+                                        <label><i class="fas fa-code-branch"></i> Crossover</label>
+                                        <div class="param-slider">
+                                            <input type="range" min="0.5" max="1" step="0.01" value="0.88" id="crossover-rate">
+                                            <span class="slider-value">88%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="param-row">
+                                    <div class="param-group">
+                                        <label><i class="fas fa-microchip"></i> Max Sensores</label>
+                                        <div class="param-input">
+                                            <input type="number" value="25" min="5" max="50" id="max-sensors">
+                                        </div>
+                                    </div>
+                                    <div class="param-group">
+                                        <label><i class="fas fa-broadcast-tower"></i> Max Boyas</label>
+                                        <div class="param-input">
+                                            <input type="number" value="6" min="1" max="15" id="max-buoys">
+                                        </div>
+                                    </div>
+                                    <div class="param-group">
+                                        <label><i class="fas fa-trophy"></i> Torneo</label>
+                                        <div class="param-input">
+                                            <input type="number" value="3" min="2" max="10" id="tournament-size">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- POIs Configuration -->
+                        <div class="config-card" data-aos="fade-up" data-aos-delay="400">
+                            <div class="card-header">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <h3>Puntos de Interés (POIs)</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="poi-legend">
+                                    <div class="poi-type">
+                                        <span class="poi-dot" style="background: #e74c3c"></span>
+                                        <span>Descargas Industriales (6)</span>
+                                    </div>
+                                    <div class="poi-type">
+                                        <span class="poi-dot" style="background: #3498db"></span>
+                                        <span>Zonas de Fondeo (4)</span>
+                                    </div>
+                                    <div class="poi-type">
+                                        <span class="poi-dot" style="background: #2ecc71"></span>
+                                        <span>Áreas Sensibles (5)</span>
+                                    </div>
+                                    <div class="poi-type">
+                                        <span class="poi-dot" style="background: #f39c12"></span>
+                                        <span>Entradas Bahía (3)</span>
+                                    </div>
+                                    <div class="poi-type">
+                                        <span class="poi-dot" style="background: #9b59b6"></span>
+                                        <span>Monitoreo Crítico (2)</span>
+                                    </div>
+                                </div>
+                                <div class="poi-stats">
+                                    <div class="poi-stat">
+                                        <span class="number">20</span>
+                                        <span class="label">Total POIs</span>
+                                    </div>
+                                    <div class="poi-stat">
+                                        <span class="number">100-180m</span>
+                                        <span class="label">Radios Cobertura</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Constraints -->
+                        <div class="config-card" data-aos="fade-up" data-aos-delay="500">
+                            <div class="card-header">
+                                <i class="fas fa-shield-alt"></i>
+                                <h3>Restricciones</h3>
+                            </div>
+                            <div class="card-content">
+                                <ul class="constraints-list">
+                                    <li>
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Solo despliegue en zonas marítimas</span>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Conectividad garantizada hacia gateway</span>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Respeto al polígono WATER_POLYGON</span>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Profundidad dentro de límites batimétricos</span>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Enlace acústico ≤ rango máximo</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-actions" data-aos="fade-up">
+                        <button class="btn btn-primary btn-glow btn-large" onclick="navigateTo('algorithm')">
+                            <i class="fas fa-arrow-right"></i> Continuar al Algoritmo
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Algorithm Explanation -->
+            <section id="algorithm" class="section">
+                <div class="section-inner">
+                    <div class="section-header" data-aos="fade-down">
+                        <h2><i class="fas fa-dna"></i> Algoritmo NSGA-II</h2>
+                        <p>Non-dominated Sorting Genetic Algorithm II - Optimización Multi-Objetivo</p>
+                    </div>
+
+                    <!-- ¿Qué es NSGA-II? - Explicación introductoria -->
+                    <div class="nsga-intro" data-aos="fade-up">
+                        <div class="intro-card">
+                            <div class="intro-icon">🧬</div>
+                            <div class="intro-content">
+                                <h3>¿Qué es NSGA-II?</h3>
+                                <p>NSGA-II (Non-dominated Sorting Genetic Algorithm II) es un algoritmo evolutivo 
+                                diseñado para resolver problemas de <strong>optimización multi-objetivo</strong>. 
+                                A diferencia de algoritmos tradicionales que buscan una única solución óptima, 
+                                NSGA-II encuentra un conjunto de soluciones de compromiso llamado <em>Frente de Pareto</em>.</p>
+                                <div class="key-concepts">
+                                    <span class="concept"><i class="fas fa-balance-scale"></i> Multi-objetivo: Optimizar varios criterios simultáneamente</span>
+                                    <span class="concept"><i class="fas fa-layer-group"></i> Dominancia Pareto: Comparar soluciones sin preferencias</span>
+                                    <span class="concept"><i class="fas fa-random"></i> Evolutivo: Inspirado en selección natural</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Parámetros con explicaciones detalladas -->
+                    <div class="params-section" data-aos="fade-up">
+                        <h3><i class="fas fa-sliders-h"></i> Parámetros del Algoritmo</h3>
+                        <p class="section-desc">Cada parámetro fue cuidadosamente calibrado para este problema específico:</p>
+                        
+                        <div class="params-table-container">
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parámetro</th>
+                                        <th>Valor</th>
+                                        <th>Descripción</th>
+                                        <th>Justificación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Tamaño Población</strong></td>
+                                        <td><span class="param-value">160</span></td>
+                                        <td>Número de individuos (topologías) evaluadas por generación</td>
+                                        <td>Balance entre diversidad y tiempo de cómputo. Poblaciones muy pequeñas (&lt;50) convergen prematuramente; muy grandes (&gt;300) son costosas computacionalmente.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Generaciones</strong></td>
+                                        <td><span class="param-value">320</span></td>
+                                        <td>Número de ciclos evolutivos completos</td>
+                                        <td>Suficiente para convergencia estable. Pruebas mostraron que el frente de Pareto se estabiliza ~generación 250.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Prob. Crossover</strong></td>
+                                        <td><span class="param-value">0.88 (88%)</span></td>
+                                        <td>Probabilidad de intercambio genético entre padres</td>
+                                        <td>Valor alto favorece exploración del espacio de búsqueda. Literatura recomienda 0.8-0.95 para problemas espaciales.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Prob. Mutación</strong></td>
+                                        <td><span class="param-value">0.22 (22%)</span></td>
+                                        <td>Probabilidad de variación aleatoria en genes</td>
+                                        <td>Mayor que típico (5-15%) para evitar estancamiento en óptimos locales. El espacio de búsqueda es discontinuo.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Torneo (k)</strong></td>
+                                        <td><span class="param-value">3</span></td>
+                                        <td>Individuos comparados en selección por torneo</td>
+                                        <td>k=3 da presión selectiva moderada. k=2 es muy suave; k&gt;4 puede eliminar diversidad prematuramente.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Máx. Sensores</strong></td>
+                                        <td><span class="param-value">25</span></td>
+                                        <td>Límite superior de nodos sensores por topología</td>
+                                        <td>Basado en restricciones físicas del área (1 km²) y densidad de POIs (20). Permite cobertura total con redundancia.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Máx. Gateways</strong></td>
+                                        <td><span class="param-value">6</span></td>
+                                        <td>Límite superior de boyas gateway</td>
+                                        <td>Rango acústico (~6 km) cubre el área con 1 gateway, pero permitimos más para tolerancia a fallos.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Funciones Objetivo -->
+                    <div class="objectives-section" data-aos="fade-up">
+                        <h3><i class="fas fa-bullseye"></i> Funciones Objetivo</h3>
+                        <div class="objectives-grid">
+                            <div class="objective-card minimize">
+                                <div class="obj-header">
+                                    <i class="fas fa-arrow-down"></i>
+                                    <span>MINIMIZAR</span>
+                                </div>
+                                <h4>Costo Relativo</h4>
+                                <div class="obj-formula">
+                                    <code>f₁ = SN × 1 + BG × 5</code>
+                                </div>
+                                <p>Donde SN = sensores activos, BG = gateways activas. 
+                                El factor 5 refleja que una boya gateway cuesta ~5× más que un sensor submarino.</p>
+                                <div class="obj-example">
+                                    <strong>Ejemplo:</strong> 7 sensores + 1 gateway = 7×1 + 1×5 = <span class="highlight">12 unidades</span>
+                                </div>
+                            </div>
+                            <div class="objective-card maximize">
+                                <div class="obj-header">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>MAXIMIZAR</span>
+                                </div>
+                                <h4>Cobertura de POIs</h4>
+                                <div class="obj-formula">
+                                    <code>f₂ = (POIs cubiertos / Total POIs) × 100</code>
+                                </div>
+                                <p>Un POI se considera "cubierto" si existe al menos un sensor 
+                                dentro de su radio de cobertura y ese sensor tiene conectividad con un gateway.</p>
+                                <div class="obj-example">
+                                    <strong>Meta:</strong> Cubrir los 20 POIs = <span class="highlight">100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flujo del Algoritmo Visual -->
+                    <div class="algorithm-flow" data-aos="fade-up">
+                        <h3><i class="fas fa-project-diagram"></i> Flujo del Algoritmo</h3>
+                        <div class="flow-container">
+                            <div class="flow-step">
+                                <div class="flow-icon">🎲</div>
+                                <div class="flow-number">1</div>
+                                <h4>Inicialización</h4>
+                                <p>Generar 160 topologías aleatorias dentro del polígono marítimo válido</p>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">📊</div>
+                                <div class="flow-number">2</div>
+                                <h4>Evaluación</h4>
+                                <p>Calcular (costo, cobertura) para cada individuo</p>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">🏅</div>
+                                <div class="flow-number">3</div>
+                                <h4>Ranking</h4>
+                                <p>Ordenar por dominancia no-dominada (Frentes F₀, F₁, F₂...)</p>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">📏</div>
+                                <div class="flow-number">4</div>
+                                <h4>Crowding</h4>
+                                <p>Calcular distancia de crowding para mantener diversidad</p>
+                            </div>
+                            <div class="flow-arrow loop-arrow">↻</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">🎯</div>
+                                <div class="flow-number">5</div>
+                                <h4>Selección</h4>
+                                <p>Torneo binario priorizando rango y crowding</p>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">✂️</div>
+                                <div class="flow-number">6</div>
+                                <h4>Crossover</h4>
+                                <p>Intercambiar genes (posiciones de nodos) entre padres</p>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">🔀</div>
+                                <div class="flow-number">7</div>
+                                <h4>Mutación</h4>
+                                <p>Perturbar posiciones aleatoriamente o activar/desactivar nodos</p>
+                            </div>
+                        </div>
+                        <div class="flow-footer">
+                            <div class="iteration-info">
+                                <span class="iteration-label">Repetir por</span>
+                                <span class="iteration-value">320</span>
+                                <span class="iteration-label">generaciones</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conceptos Clave Visuales -->
+                    <div class="concepts-section" data-aos="fade-up">
+                        <h3><i class="fas fa-lightbulb"></i> Conceptos Clave</h3>
+                        <div class="concepts-grid">
+                            <div class="concept-card">
+                                <h4><i class="fas fa-crown"></i> Dominancia de Pareto</h4>
+                                <div class="concept-visual">
+                                    <svg viewBox="0 0 200 150" class="pareto-svg">
+                                        <!-- Ejes -->
+                                        <line x1="30" y1="120" x2="180" y2="120" stroke="#666" stroke-width="2"/>
+                                        <line x1="30" y1="120" x2="30" y2="20" stroke="#666" stroke-width="2"/>
+                                        <text x="105" y="140" fill="#9ca3af" font-size="10" text-anchor="middle">Costo →</text>
+                                        <text x="15" y="70" fill="#9ca3af" font-size="10" text-anchor="middle" transform="rotate(-90 15 70)">Cobertura →</text>
+                                        
+                                        <!-- Puntos dominados -->
+                                        <circle cx="120" cy="80" r="6" fill="#ef4444" opacity="0.7"/>
+                                        <circle cx="140" cy="60" r="6" fill="#ef4444" opacity="0.7"/>
+                                        <circle cx="100" cy="100" r="6" fill="#ef4444" opacity="0.7"/>
+                                        
+                                        <!-- Frente de Pareto -->
+                                        <circle cx="50" cy="90" r="6" fill="#22c55e"/>
+                                        <circle cx="70" cy="60" r="6" fill="#22c55e"/>
+                                        <circle cx="90" cy="40" r="6" fill="#22c55e"/>
+                                        <circle cx="130" cy="30" r="6" fill="#22c55e"/>
+                                        
+                                        <!-- Línea Pareto -->
+                                        <path d="M50,90 Q70,50 130,30" stroke="#22c55e" stroke-width="2" fill="none" stroke-dasharray="5,3"/>
+                                    </svg>
+                                </div>
+                                <p><span style="color:#22c55e">●</span> Soluciones no-dominadas (Pareto) <br>
+                                   <span style="color:#ef4444">●</span> Soluciones dominadas</p>
+                            </div>
+                            <div class="concept-card">
+                                <h4><i class="fas fa-expand-arrows-alt"></i> Crowding Distance</h4>
+                                <div class="concept-visual">
+                                    <svg viewBox="0 0 200 150" class="crowding-svg">
+                                        <!-- Puntos del frente -->
+                                        <circle cx="40" cy="100" r="5" fill="#00d1ff"/>
+                                        <circle cx="80" cy="70" r="8" fill="#f59e0b"/>
+                                        <circle cx="120" cy="50" r="5" fill="#00d1ff"/>
+                                        <circle cx="160" cy="35" r="5" fill="#00d1ff"/>
+                                        
+                                        <!-- Cuadro de crowding -->
+                                        <rect x="40" y="50" width="80" height="50" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,2"/>
+                                        
+                                        <!-- Flechas -->
+                                        <line x1="40" y1="70" x2="75" y2="70" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow)"/>
+                                        <line x1="80" y1="100" x2="80" y2="75" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow)"/>
+                                        
+                                        <defs>
+                                            <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                                                <path d="M0,0 L6,3 L0,6 Z" fill="#f59e0b"/>
+                                            </marker>
+                                        </defs>
+                                    </svg>
+                                </div>
+                                <p>Mide el "espacio" alrededor de cada solución. Mayor distancia = más diversidad = se preserva.</p>
+                            </div>
+                            <div class="concept-card">
+                                <h4><i class="fas fa-dna"></i> Representación Genética</h4>
+                                <div class="chromosome-visual">
+                                    <div class="chromosome">
+                                        <div class="gene sensor" title="Sensor 1: lat, lon, depth, activo">
+                                            <span class="gene-label">SN₁</span>
+                                            <span class="gene-data">[-33.04, -71.67, 24m, ✓]</span>
+                                        </div>
+                                        <div class="gene sensor">
+                                            <span class="gene-label">SN₂</span>
+                                            <span class="gene-data">[-33.03, -71.66, 11m, ✓]</span>
+                                        </div>
+                                        <div class="gene inactive">
+                                            <span class="gene-label">SN₃</span>
+                                            <span class="gene-data">[..., ✗]</span>
+                                        </div>
+                                        <div class="gene gateway">
+                                            <span class="gene-label">BG₁</span>
+                                            <span class="gene-data">[-33.02, -71.67, ✓]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>Cada individuo codifica: posición (lat, lon), profundidad y estado activo/inactivo.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botón de navegación -->
+                    <div class="section-actions" data-aos="fade-up">
+                        <button class="btn btn-primary btn-glow btn-large" onclick="navigateTo('evolution')">
+                            <i class="fas fa-play-circle"></i> Ver Simulación en Vivo
+                        </button>
+                        <button class="btn btn-secondary btn-large" onclick="navigateTo('results')">
+                            <i class="fas fa-trophy"></i> Ver Resultados Finales
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Evolution Visualization -->
+            <section id="evolution" class="section">
+                <div class="section-inner">
+                    <div class="section-header" data-aos="fade-down">
+                        <h2><i class="fas fa-chart-line"></i> Evolución del Algoritmo</h2>
+                        <p>Observa cómo el algoritmo converge hacia el frente de Pareto óptimo</p>
+                    </div>
+
+                    <div class="evolution-dashboard">
+                        <!-- Progress Panel -->
+                        <div class="progress-panel" data-aos="fade-right">
+                            <div class="evolution-progress">
+                                <div class="progress-ring">
+                                    <svg viewBox="0 0 120 120">
+                                        <circle class="progress-bg" cx="60" cy="60" r="54"/>
+                                        <circle class="progress-bar" cx="60" cy="60" r="54" id="evolution-ring"/>
+                                    </svg>
+                                    <div class="progress-text">
+                                        <span class="progress-value" id="evolution-percent">0%</span>
+                                        <span class="progress-label">Completado</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- New Controls -->
+                            <div class="evolution-controls-panel">
+                                <div class="control-buttons">
+                                    <button id="btn-evo-play" class="btn btn-primary btn-small"><i class="fas fa-play"></i></button>
+                                    <button id="btn-evo-pause" class="btn btn-secondary btn-small"><i class="fas fa-pause"></i></button>
+                                    <button id="btn-evo-step-back" class="btn btn-secondary btn-small"><i class="fas fa-step-backward"></i></button>
+                                    <button id="btn-evo-step-fwd" class="btn btn-secondary btn-small"><i class="fas fa-step-forward"></i></button>
+                                </div>
+                                <input type="range" id="evo-slider" min="0" max="100" value="0" class="slider full-width">
+                                <div class="speed-control-mini">
+                                    <label>Velocidad:</label>
+                                    <input type="range" id="evo-speed" min="1" max="10" value="5">
+                                </div>
+                            </div>
+
+                            <div class="evolution-stats">
+                                <div class="evo-stat">
+                                    <i class="fas fa-layer-group"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="evo-generation">0</span>
+                                        <span class="stat-name">Generación</span>
+                                    </div>
+                                </div>
+                                <div class="evo-stat">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="evo-best-cost">--</span>
+                                        <span class="stat-name">Mejor Costo</span>
+                                    </div>
+                                </div>
+                                <div class="evo-stat">
+                                    <i class="fas fa-bullseye"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="evo-best-coverage">--%</span>
+                                        <span class="stat-name">Mejor Cobertura</span>
+                                    </div>
+                                </div>
+                                <div class="evo-stat">
+                                    <i class="fas fa-star"></i>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="evo-pareto-size">0</span>
+                                        <span class="stat-name">Frente Pareto</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="evolution-log" id="evolution-log">
+                                <div class="log-entry">
+                                    <span class="log-time">00:00</span>
+                                    <span class="log-msg">Sistema listo. Presione "Ejecutar" para comenzar.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Panel -->
+                        <div class="charts-panel" data-aos="fade-left">
+                            <div class="chart-container">
+                                <h4><i class="fas fa-chart-area"></i> Convergencia</h4>
+                                <canvas id="convergence-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4><i class="fas fa-project-diagram"></i> Frente de Pareto</h4>
+                                <canvas id="pareto-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generational Snapshots -->
+                    <div class="generation-snapshots" data-aos="fade-up">
+                        <h4>Snapshots por Generación</h4>
+                        <div class="snapshots-timeline" id="snapshots-timeline">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <div class="section-actions" data-aos="fade-up">
+                        <button class="btn btn-primary btn-glow btn-large" onclick="navigateTo('results')" id="btn-see-results" disabled>
+                            <i class="fas fa-trophy"></i> Ver Resultados Finales
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Results -->
+            <section id="results" class="section">
+                <div class="section-inner">
+                    <div class="section-header" data-aos="fade-down">
+                        <h2><i class="fas fa-trophy"></i> Resultados de la Optimización</h2>
+                        <p>Solución balanceada seleccionada del frente de Pareto</p>
+                    </div>
+
+                    <div class="results-showcase">
+                        <!-- Winner Card -->
+                        <div class="winner-card" data-aos="zoom-in">
+                            <div class="winner-badge">
+                                <i class="fas fa-crown"></i>
+                                <span>Solución Óptima</span>
+                            </div>
+                            <div class="winner-stats">
+                                <div class="winner-stat main">
+                                    <div class="stat-circle">
+                                        <span class="value">100%</span>
+                                    </div>
+                                    <span class="label">Cobertura POIs</span>
+                                </div>
+                                <div class="winner-details">
+                                    <div class="detail">
+                                        <i class="fas fa-microchip"></i>
+                                        <span><strong>7</strong> Sensores Submarinos</span>
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fas fa-broadcast-tower"></i>
+                                        <span><strong>1</strong> Boya Gateway</span>
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fas fa-coins"></i>
+                                        <span>Costo Relativo: <strong>12</strong></span>
+                                    </div>
+                                    <div class="detail">
+                                        <i class="fas fa-clock"></i>
+                                        <span>Tiempo: <strong>121.6s</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pareto Front -->
+                        <div class="pareto-result" data-aos="fade-up" data-aos-delay="200">
+                            <h4><i class="fas fa-chart-scatter"></i> Frente de Pareto Final</h4>
+                            <div class="pareto-chart-container">
+                                <canvas id="final-pareto-chart"></canvas>
+                            </div>
+                            <div class="pareto-legend">
+                                <div class="legend-item">
+                                    <span class="dot selected"></span>
+                                    <span>Solución Seleccionada</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="dot pareto"></span>
+                                    <span>Frente de Pareto</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metrics Cards -->
+                        <div class="metrics-grid" data-aos="fade-up" data-aos-delay="300">
+                            <div class="metric-card">
+                                <div class="metric-icon connectivity">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">OK</span>
+                                    <span class="metric-name">Conectividad</span>
+                                </div>
+                                <div class="metric-status success">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon nodes">
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">8</span>
+                                    <span class="metric-name">Total Nodos</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon links">
+                                    <i class="fas fa-link"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">28</span>
+                                    <span class="metric-name">Enlaces</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon neighbors">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">7.0</span>
+                                    <span class="metric-name">Vecinos Promedio</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon hops">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">1</span>
+                                    <span class="metric-name">Max Hops a Gateway</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-icon redundancy">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">100%</span>
+                                    <span class="metric-name">Redundancia</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-actions" data-aos="fade-up">
+                        <button class="btn btn-primary btn-glow btn-large" onclick="navigateTo('topology')">
+                            <i class="fas fa-map-marked-alt"></i> Ver Topología en Mapa
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 6: Topology -->
+            <section id="topology" class="section">
+                <div class="section-inner">
+                    <div class="section-header" data-aos="fade-down">
+                        <h2><i class="fas fa-project-diagram"></i> Topología de Red Final</h2>
+                        <p>Visualización interactiva del despliegue en la Bahía de Valparaíso</p>
+                    </div>
+
+                    <div class="topology-container">
+                        <!-- Interactive Map -->
+                        <div class="map-container" data-aos="fade-right">
+                            <div id="topology-map"></div>
+                            <div class="map-controls">
+                                <button class="map-btn" id="toggle-sensors" title="Mostrar/Ocultar Sensores">
+                                    <i class="fas fa-microchip"></i>
+                                </button>
+                                <button class="map-btn" id="toggle-buoys" title="Mostrar/Ocultar Boyas">
+                                    <i class="fas fa-broadcast-tower"></i>
+                                </button>
+                                <button class="map-btn" id="toggle-pois" title="Mostrar/Ocultar POIs">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </button>
+                                <button class="map-btn" id="toggle-links" title="Mostrar/Ocultar Enlaces">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                                <button class="map-btn" id="toggle-coverage" title="Mostrar/Ocultar Cobertura">
+                                    <i class="fas fa-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Node Details Panel -->
+                        <div class="details-panel" data-aos="fade-left">
+                            <div class="panel-tabs">
+                                <button class="tab-btn active" data-tab="nodes">Nodos</button>
+                                <button class="tab-btn" data-tab="pois">POIs</button>
+                                <button class="tab-btn" data-tab="links">Enlaces</button>
+                            </div>
+
+                            <div class="tab-content active" id="tab-nodes">
+                                <h4>Nodos de la Red</h4>
+                                <div class="nodes-list" id="nodes-list">
+                                    <!-- Dynamically populated -->
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="tab-pois">
+                                <h4>Puntos de Interés</h4>
+                                <div class="pois-list" id="pois-list">
+                                    <!-- Dynamically populated -->
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="tab-links">
+                                <h4>Enlaces Acústicos</h4>
+                                <div class="links-info">
+                                    <div class="link-stat">
+                                        <span class="value">28</span>
+                                        <span class="label">Total Enlaces</span>
+                                    </div>
+                                    <div class="link-stat">
+                                        <span class="value">5,934m</span>
+                                        <span class="label">Rango Máximo</span>
+                                    </div>
+                                </div>
+                                <div class="link-matrix" id="link-matrix">
+                                    <!-- Dynamically populated -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Node Explanation Cards -->
+                    <div class="node-explanations" data-aos="fade-up">
+                        <h4>Componentes de la Red</h4>
+                        <div class="explanation-cards">
+                            <div class="explain-card sensor">
+                                <div class="card-icon">📶</div>
+                                <h5>Sensor Submarino (SN)</h5>
+                                <p>Nodo sumergido que monitorea parámetros oceanográficos. 
+                                Se comunica acústicamente con otros nodos y la boya gateway.</p>
+                                <ul>
+                                    <li>Profundidad: 8-25m</li>
+                                    <li>Comunicación: Acústica 20kHz</li>
+                                    <li>Sensores: Temp, pH, Salinidad, Turbidez</li>
+                                </ul>
+                            </div>
+                            <div class="explain-card gateway">
+                                <div class="card-icon">📡</div>
+                                <h5>Boya Gateway (BG)</h5>
+                                <p>Nodo flotante en superficie que actúa como puente entre 
+                                la red submarina y la estación costera.</p>
+                                <ul>
+                                    <li>Posición: Superficie</li>
+                                    <li>Enlace ascendente: LoRaWAN/4G</li>
+                                    <li>Energía: Solar + Batería</li>
+                                </ul>
+                            </div>
+                            <div class="explain-card poi">
+                                <div class="card-icon">📍</div>
+                                <h5>Punto de Interés (POI)</h5>
+                                <p>Ubicación que requiere monitoreo según su tipo: 
+                                descargas industriales, áreas sensibles, fondeo, etc.</p>
+                                <ul>
+                                    <li>Radio de cobertura: 100-180m</li>
+                                    <li>Prioridad: Baja a Muy Alta</li>
+                                    <li>Total: 20 POIs</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-actions" data-aos="fade-up">
+                        <button class="btn btn-primary btn-glow btn-large" onclick="navigateTo('economics')">
+                            <i class="fas fa-coins"></i> Ver Análisis Económico
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Economics -->
+            <section id="economics" class="section">
+                <div class="section-inner">
+                    <div class="section-header" data-aos="fade-down">
+                        <h2><i class="fas fa-coins"></i> Análisis Económico</h2>
+                        <p>CAPEX, OPEX y TCO del despliegue de la red UWSN</p>
+                    </div>
+
+                    <div class="economics-dashboard">
+                        <!-- Summary Cards -->
+                        <div class="eco-summary" data-aos="fade-up">
+                            <div class="eco-card capex">
+                                <div class="eco-icon"><i class="fas fa-shopping-cart"></i></div>
+                                <div class="eco-info">
+                                    <span class="eco-label">CAPEX</span>
+                                    <span class="eco-value">$339,900</span>
+                                    <span class="eco-desc">Inversión Inicial</span>
+                                </div>
+                            </div>
+                            <div class="eco-card opex">
+                                <div class="eco-icon"><i class="fas fa-sync-alt"></i></div>
+                                <div class="eco-info">
+                                    <span class="eco-label">OPEX Anual</span>
+                                    <span class="eco-value">$73,699</span>
+                                    <span class="eco-desc">Costos Operativos</span>
+                                </div>
+                            </div>
+                            <div class="eco-card tco">
+                                <div class="eco-icon"><i class="fas fa-calculator"></i></div>
+                                <div class="eco-info">
+                                    <span class="eco-label">TCO 10 Años</span>
+                                    <span class="eco-value">$834,423</span>
+                                    <span class="eco-desc">Costo Total Propiedad</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Row -->
+                        <div class="eco-charts" data-aos="fade-up" data-aos-delay="200">
+                            <div class="eco-chart-container">
+                                <h4><i class="fas fa-chart-pie"></i> Desglose CAPEX</h4>
+                                <canvas id="capex-chart"></canvas>
+                            </div>
+                            <div class="eco-chart-container">
+                                <h4><i class="fas fa-chart-pie"></i> Desglose OPEX</h4>
+                                <canvas id="opex-chart"></canvas>
+                            </div>
+                            <div class="eco-chart-container">
+                                <h4><i class="fas fa-chart-bar"></i> Proyección TCO</h4>
+                                <canvas id="tco-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Cost Breakdown Table -->
+                        <div class="cost-breakdown" data-aos="fade-up" data-aos-delay="300">
+                            <h4><i class="fas fa-list"></i> Desglose Detallado de Costos</h4>
+                            <div class="breakdown-grid">
+                                <div class="breakdown-section">
+                                    <h5>CAPEX - Inversión Inicial</h5>
+                                    <table class="cost-table">
+                                        <tr>
+                                            <td>Sensores Submarinos (7x)</td>
+                                            <td class="amount">$105,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Boya Gateway (1x)</td>
+                                            <td class="amount">$35,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Estación Costera</td>
+                                            <td class="amount">$45,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Instalación y Despliegue</td>
+                                            <td class="amount">$85,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Infraestructura Auxiliar</td>
+                                            <td class="amount">$35,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ingeniería y Diseño</td>
+                                            <td class="amount">$25,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Contingencia (10%)</td>
+                                            <td class="amount">$30,900</td>
+                                        </tr>
+                                        <tr class="total">
+                                            <td>Total CAPEX</td>
+                                            <td class="amount">$339,900</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="breakdown-section">
+                                    <h5>OPEX - Costos Anuales</h5>
+                                    <table class="cost-table">
+                                        <tr>
+                                            <td>Mantenimiento</td>
+                                            <td class="amount">$11,900</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Energía</td>
+                                            <td class="amount">$1,500</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Comunicaciones</td>
+                                            <td class="amount">$9,600</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Personal Técnico</td>
+                                            <td class="amount">$36,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fondo Reposición</td>
+                                            <td class="amount">$7,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Seguros</td>
+                                            <td class="amount">$5,099</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Licencias Software</td>
+                                            <td class="amount">$4,500</td>
+                                        </tr>
+                                        <tr class="total">
+                                            <td>Total OPEX Anual</td>
+                                            <td class="amount">$73,699</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Final Summary -->
+                    <div class="final-summary" data-aos="fade-up" data-aos-delay="400">
+                        <div class="summary-card">
+                            <h4><i class="fas fa-check-circle"></i> Resumen Ejecutivo</h4>
+                            <div class="summary-content">
+                                <p>La topología optimizada logra <strong>100% de cobertura</strong> de los 20 POIs 
+                                con una inversión inicial de <strong>$339,900 USD</strong> y un costo operativo anual 
+                                de <strong>$73,699 USD</strong>.</p>
+                                <p>El <strong>TCO a 10 años</strong> de <strong>$834,423 USD</strong> representa una 
+                                inversión eficiente para el monitoreo continuo de la bahía de Valparaíso.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-actions final" data-aos="fade-up">
+                        <button class="btn btn-secondary btn-large" onclick="navigateTo('intro')">
+                            <i class="fas fa-home"></i> Volver al Inicio
+                        </button>
+                        <button class="btn btn-primary btn-glow btn-large" onclick="downloadReport()">
+                            <i class="fas fa-download"></i> Descargar Informe
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="data.js"></script>
+    <script src="particles.js"></script>
+    <script src="charts.js"></script>
+    <script src="map.js"></script>
+    <script src="evolution.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
